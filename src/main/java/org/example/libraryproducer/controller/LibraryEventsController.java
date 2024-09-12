@@ -1,6 +1,7 @@
 package org.example.libraryproducer.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.libraryproducer.domain.LibraryEvent;
@@ -22,7 +23,7 @@ public class LibraryEventsController {
 
     @PostMapping("/v1/library-event")
     public ResponseEntity<LibraryEvent> postLibraryEvent(
-            @RequestBody LibraryEvent libraryEvent
+            @RequestBody @Valid LibraryEvent libraryEvent
     ) throws JsonProcessingException, ExecutionException, InterruptedException {
 
 //        producer.sendLibraryEvent(libraryEvent);
