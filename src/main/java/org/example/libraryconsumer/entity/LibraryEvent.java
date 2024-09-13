@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class LibraryEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
