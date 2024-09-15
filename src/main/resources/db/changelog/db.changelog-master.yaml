@@ -1,3 +1,9 @@
 databaseChangeLog:
     - include:
         file: db/changelog/migrations/001_init_tables.sql
+
+    - include:
+          file: db/changelog/migrations/002_move_foreign_key_to_library_event.sql
+
+    - include:
+        file: db/changelog/migrations/003_update_book_stored_procedure.sql

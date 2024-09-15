@@ -13,12 +13,14 @@ import lombok.*;
 public class LibraryEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(name = "id")
+    private Integer libraryEventId;
 
     @Enumerated(EnumType.STRING)
     private LibraryEventType libraryEventType;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "libraryEvent")
+    @ManyToOne // Change to ManyToOne
+    @JoinColumn(name = "book_id")
     @ToString.Exclude
     private Book book;
 }

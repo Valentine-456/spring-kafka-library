@@ -14,13 +14,11 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(name = "id")
+    private Integer bookId;
 
     private String bookName;
 
     private String bookTitle;
 
-    @OneToOne
-    @JoinColumn(name = "library_event_id")
-    private LibraryEvent libraryEvent;
 }

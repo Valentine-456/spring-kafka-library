@@ -2,11 +2,13 @@ package org.example.libraryconsumer.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.example.libraryconsumer.entity.Book;
 import org.example.libraryconsumer.entity.LibraryEvent;
 import org.example.libraryconsumer.entity.LibraryEventType;
+import org.example.libraryconsumer.repository.BookRepository;
 import org.example.libraryconsumer.repository.LibraryEventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,10 @@ public class LibraryEventsService {
 
     @Autowired
     private LibraryEventsRepository libraryEventsRepository;
-    final Map<LibraryEventType, Consumer<LibraryEvent>>  eventHandlers = new HashMap<>();
-    final ObjectMapper  objectMapper;
+    @Autowired
+    private BookRepository bookRepository;
+    final Map<LibraryEventType, Consumer<LibraryEvent>> eventHandlers = new HashMap<>();
+    final ObjectMapper objectMapper;
 
     public LibraryEventsService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -44,12 +48,27 @@ public class LibraryEventsService {
     }
 
     private void create(LibraryEvent libraryEvent) {
-        var book = libraryEvent.getBook();
-        book.setLibraryEvent(libraryEvent);
+        Book book = libraryEvent.getBook();
+
+        if (book.getBookId() == null) {
+            book = bookRepository.save(book);
+            libraryEvent.setBook(book); 
+        }
+
         libraryEventsRepository.save(libraryEvent);
         log.info("Record successfully persisted!");
     }
 
-    private void update(LibraryEvent libraryEvent) {
+    @Transactional
+    protected void update(LibraryEvent libraryEvent) {
+        String newLibraryEventTypeString = libraryEvent.getLibraryEventType().toString();
+
+        libraryEventsRepository.update_library_event_and_book(
+                libraryEvent.getBook().getBookId(),
+                libraryEvent.getBook().getBookName(),
+                libraryEvent.getBook().getBookTitle(),
+                newLibraryEventTypeString
+        );
+        log.info("Library event and book updated successfully!");
     }
 }
