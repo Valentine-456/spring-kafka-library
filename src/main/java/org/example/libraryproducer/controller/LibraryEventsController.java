@@ -52,7 +52,10 @@ public class LibraryEventsController {
     }
 
     public ResponseEntity<String> validateLibraryUpdateEvent(LibraryEvent libraryEvent) {
-        if(libraryEvent.libraryEventType() != LibraryEventType.UPDATE) {
+        var typeIsNotUpdate = libraryEvent.libraryEventType() != LibraryEventType.UPDATE;
+        var bookIdIsNull = libraryEvent.book().bookId() == null;
+
+        if(typeIsNotUpdate || bookIdIsNull) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only UPDATE event type is allowed");
         }
         return null;
