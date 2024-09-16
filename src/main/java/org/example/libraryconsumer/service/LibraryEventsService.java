@@ -52,11 +52,11 @@ public class LibraryEventsService {
 
         if (book.getBookId() == null) {
             book = bookRepository.save(book);
-            libraryEvent.setBook(book); 
-        }
+            libraryEvent.setBook(book);
 
-        libraryEventsRepository.save(libraryEvent);
-        log.info("Record successfully persisted!");
+            libraryEventsRepository.save(libraryEvent);
+            log.info("Record successfully persisted!");
+        }
     }
 
     @Transactional
