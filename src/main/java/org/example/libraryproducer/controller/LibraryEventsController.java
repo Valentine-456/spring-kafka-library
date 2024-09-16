@@ -52,9 +52,6 @@ public class LibraryEventsController {
     }
 
     public ResponseEntity<String> validateLibraryUpdateEvent(LibraryEvent libraryEvent) {
-        if(libraryEvent.libraryEventId() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please, pass the library event id!");
-        }
         if(libraryEvent.libraryEventType() != LibraryEventType.UPDATE) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only UPDATE event type is allowed");
         }
