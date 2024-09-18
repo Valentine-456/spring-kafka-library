@@ -77,6 +77,23 @@ services:
     networks:
       - backend
 
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 9000:8080
+    depends_on:
+      - zoo1
+      - kafka1
+      - kafka2
+      - kafka3
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka-ui
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9093,kafka3:9094
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zoo1:2181
+    networks:
+      - backend
+
   postgres1:
     image: postgres:14-alpine
     hostname: postgres1

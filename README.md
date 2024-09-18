@@ -24,3 +24,9 @@ To start the services with Docker Compose, follow these steps:
    ```bash
    git clone https://github.com/Valentine-456/spring-kafka-library.git
    cd spring-kafka-library
+
+
+---
+### Note for Production Docker-Compose File:
+
+In the production Docker Compose setup, it's possible to access and manage the Kafka cluster using additional UI tools such as **Kafka-UI** (included in the setup) or **Confluent Control Center**. These tools allow you to monitor Kafka topics, partitions, and brokers, helping with troubleshooting, performance optimization, and easier visualization of your Kafka environment.
