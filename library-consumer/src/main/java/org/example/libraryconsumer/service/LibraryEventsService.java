@@ -66,7 +66,8 @@ public class LibraryEventsService {
         String newLibraryEventTypeString = libraryEvent.getLibraryEventType().toString();
 
 
-        if(libraryEvent.getLibraryEventId() == 0) throw new NullPointerException("message");
+//        if(libraryEvent.getLibraryEventId() == 0) throw new NullPointerException("message");
+//        if(libraryEvent.getLibraryEventId() == 0) throw new RecoverableDataAccessException("message");
 
         libraryEventsRepository.update_library_event_and_book(
                 libraryEvent.getBook().getBookId(),

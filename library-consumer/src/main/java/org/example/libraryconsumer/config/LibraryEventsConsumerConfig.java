@@ -1,7 +1,10 @@
 package org.example.libraryconsumer.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
+import org.example.libraryconsumer.entity.FailureRecordStatus;
+import org.example.libraryconsumer.service.FailureService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +35,9 @@ public class LibraryEventsConsumerConfig {
     @Autowired
     KafkaTemplate kafkaTemplate;
 
+    @Autowired
+    FailureService failureService;
+
     @Value("${topics.dead-letter}")
     private String deadLetterTopic;
 
@@ -51,13 +57,27 @@ public class LibraryEventsConsumerConfig {
         return recoverer;
     }
 
+    ConsumerRecordRecoverer consumerRecordRecoverer = (consumerRecord, e) -> {
+        var record = (ConsumerRecord<Integer, String>) consumerRecord;
+
+        if(e.getCause() instanceof RecoverableDataAccessException) {
+            failureService.saveFailedRecord(record, e, FailureRecordStatus.RETRY);
+        } else {
+            failureService.saveFailedRecord(record, e, FailureRecordStatus.DEAD_LETTER);
+        }
+    };
+
     private DefaultErrorHandler provideErrorHandler() {
 //        FixedBackOff backOff = new FixedBackOff(1000L, 4);
         ExponentialBackOff backOff = new ExponentialBackOffWithMaxRetries(3);
         backOff.setInitialInterval(1000L);
         backOff.setMultiplier(3.0);
 
-        var defaultErrorHandler = new DefaultErrorHandler(provideDeadLetterRecoverer(),backOff);
+        var defaultErrorHandler = new DefaultErrorHandler(
+//                provideDeadLetterRecoverer(),
+                consumerRecordRecoverer,
+                backOff
+        );
         var notRetryableErrors = List.of(IllegalArgumentException.class);
         notRetryableErrors.forEach(defaultErrorHandler::addNotRetryableExceptions);
         defaultErrorHandler.setRetryListeners((record, ex, deliveryAttempt) -> {

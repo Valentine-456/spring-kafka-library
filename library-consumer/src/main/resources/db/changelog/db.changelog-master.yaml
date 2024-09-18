@@ -7,3 +7,6 @@ databaseChangeLog:
 
     - include:
         file: db/changelog/migrations/003_update_book_stored_procedure.sql
+
+    - include:
+          file: db/changelog/migrations/004_add_failure_records_table.sql
