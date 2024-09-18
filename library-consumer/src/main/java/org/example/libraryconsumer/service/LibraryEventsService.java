@@ -11,10 +11,12 @@ import org.example.libraryconsumer.entity.LibraryEventType;
 import org.example.libraryconsumer.repository.BookRepository;
 import org.example.libraryconsumer.repository.LibraryEventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 
 @Service
@@ -62,6 +64,9 @@ public class LibraryEventsService {
     @Transactional
     protected void update(LibraryEvent libraryEvent) {
         String newLibraryEventTypeString = libraryEvent.getLibraryEventType().toString();
+
+
+        if(libraryEvent.getLibraryEventId() == 0) throw new NullPointerException("message");
 
         libraryEventsRepository.update_library_event_and_book(
                 libraryEvent.getBook().getBookId(),

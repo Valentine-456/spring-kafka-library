@@ -11,16 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @AllArgsConstructor
-public class LibraryEventsConsumer {
-
+public class LibraryEventsRetryConsumer {
     private LibraryEventsService libraryEventsService;
 
     @KafkaListener(
-            topics = {"library-events"},
-            groupId = "${spring.kafka.consumer.group-id}"
+            topics = {"${topics.retry}"},
+            groupId = "retry-listener-group"
     )
-    public void onMessage(ConsumerRecord<Integer, String> consumerRecord) throws JsonProcessingException {
-        log.info("Received Message: {}", consumerRecord);
-        libraryEventsService.processLibraryEvent(consumerRecord);
+    public void onMessage(ConsumerRecord<Integer, String> record) throws JsonProcessingException {
+        log.info("Retrying message: {}", record);
+        libraryEventsService.processLibraryEvent(record);
     }
 }
